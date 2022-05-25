@@ -1,24 +1,26 @@
 <template>
   <div class="hello">
+    <a href="/" @click.prevent="notifyUser">test moi</a>
     <h1>{{ msg }}</h1>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
       <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
     </p>
-    <h3>Installed CLI Plugins</h3>
+    <div v-if="displayHelpCli" class="cli-plug"><h3>Installed CLI Plugins</h3></div>
     <ul>
       <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
       <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
     </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
+    <div :class="['essential', { 'block-warning':displayWarning, 'block-normal':!displayWarning}] ">
+      <h3>Essential Links</h3>
+      <ul>
+        <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
+        <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
+        <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
+        <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
+        <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
+      </ul></div>
     <h3>Ecosystem</h3>
     <ul>
       <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
@@ -31,11 +33,41 @@
 </template>
 
 <script>
+import {ToastService} from "@/mixin/ToastService";
+
 export default {
   name: 'HelloWorld',
+  mixins:[ToastService],
   props: {
-    msg: String
-  }
+    msg: String,
+    userTitle:{
+      type: String,
+      default: 'no-name',
+    },
+    displayHelpCli:{
+      type: Boolean,
+      default: true,
+    },
+    displayWarning:{
+      type: Boolean,
+      default: false,
+    },
+
+  },
+  data() {
+    return {
+      d: null,
+    }
+  },
+  mounted() {
+    this.notifyUser()
+  },
+  methods: {
+    notifyUser(){
+      this.AppToast.success('salut '  + this.userTitle);
+    }
+  },
+
 }
 </script>
 
@@ -54,5 +86,12 @@ li {
 }
 a {
   color: #42b983;
+}
+.block-warning{
+  border: red 3px solid;
+}
+
+.block-normal{
+
 }
 </style>

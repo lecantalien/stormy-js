@@ -1,23 +1,21 @@
 <template>
-  <div className="home">
-    <h1 :class="classUser">Hello {{ username }} {{ titleOfUser }} 🥉</h1>
-    <img v-if="message !== undefined" alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld v-if="message !== undefined"
-                :user-title="titleOfUser"
-                :display-warning="true"
-                :display-help-cli="true"
-                :msg="message"/>
+  <div class="home">
+    <h1>Stormy</h1>
+    <h2 :class="classUser">Hello {{ username }} {{ titleOfUser }} 🥉</h2>
+    <search-location></search-location>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+//import HelloWorld from '@/components/HelloWorld.vue'
 
+import SearchLocation from "@/components/search-location";
 export default {
   name: 'HomeView',
   components: {
-    HelloWorld
+    SearchLocation
+
   },
   data() {
     return {

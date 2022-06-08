@@ -1,37 +1,32 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <router-link v-if="currentUser === undefined" :to="{name: 'login'}"
+                   class="navbar-brand">Login
+      </router-link>
+      <router-link v-if="currentUser !== undefined" :to="{name: 'profile'}"
+                   class="navbar-brand">{{ currentUser.nickname }}
+      </router-link>
+
+      <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+              class="navbar-toggler" data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse" type="button">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div id="navbarSupportedContent" class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <router-link class="nav-link active" to="/">Home</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
+            <router-link :to="{name: 'blog-listing-view'}" class="nav-link">Blog</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            <router-link :to="{name: 'login'}" class="nav-link">Login</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/about">About</router-link>
           </li>
         </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
       </div>
     </div>
   </nav>
@@ -47,7 +42,11 @@ export default {
     }
   },
   watch: {},
-  computed: {},
+  computed: {
+    currentUser() {
+      return this.$store.getters.getUser;
+    }
+  },
   created() {
   },
   mounted() {
@@ -57,7 +56,6 @@ export default {
   beforeUnmount() {
   }
 }
-
 </script>
 
 <style scoped>

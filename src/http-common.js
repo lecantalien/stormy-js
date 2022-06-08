@@ -6,3 +6,9 @@ export default axios.create({
         "Content-type": "application/json",
     }
 });
+
+// this.results = response?.data?.features;
+// if(this.results !== null && this.results !== undefined && this.results.length > 0){
+//      return;
+// }
+// throw new Error('rien a faire ici');

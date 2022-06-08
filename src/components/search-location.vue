@@ -3,25 +3,26 @@
     <!-- form -->
     <div class="search-wrapper px-2">
       <div class="input-group mb-3">
-        <select class="custom-select"
+        <select id="inputGroupSelect01"
                 v-model="type"
-                id="inputGroupSelect01">
+                class="custom-select">
           <option value="housenumber">Numéro maison</option>
           <option selected value="street">Rue</option>
           <option value="locality">Lieu-dit</option>
           <option value="municipality">Commune</option>
         </select>
-        <input type="text" class="form-control"
-               v-model="query"
-               @keyup.enter="search"
+        <input v-model="query" :aria-label="defaultPlaceholder"
                :disabled="loading"
                :placeholder="defaultPlaceholder"
-               :aria-label="defaultPlaceholder">
+               class="form-control"
+               type="text"
+               @keyup.enter="search">
         <div class="input-group-append">
-          <button class="btn btn-outline-secondary"
-                  @click="search"
-                  :disabled="loading"
-                  type="button">Button</button>
+          <button :disabled="loading"
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  @click="search">Button
+          </button>
         </div>
       </div>
     </div>
@@ -32,14 +33,22 @@
         <div class="circle-loader wobble"></div>
       </div>
     </div>
+    <!-- map -->
+    <div v-if="coordinates_ !== null" class="map-wrapper">
+      <display-map :lat="coordinates_[0]"
+                   :lon="coordinates_[1]"
+                   :mode="mapMode"
+                   :zoom="zoomCpt"></display-map>
+    </div>
     <!-- results -->
     <div v-if="results !== undefined"
          class="results-wrapper">
       <div class="list-group">
-        <a href="#"
-           v-for="opt in results"
+        <a v-for="opt in results"
            :key="opt.properties.id"
-           class="list-group-item list-group-item-action flex-column align-items-start active">
+           class="list-group-item list-group-item-action flex-column align-items-start"
+           href="#"
+           @click.prevent="selectOption(opt)">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1">{{ opt.properties.label }}</h5>
             <small>{{ opt.properties.type }}</small>
@@ -52,85 +61,122 @@
 </template>
 
 <script>
-
 import GeocodingService from "@/services/GeocodingService";
-import {ToastService} from "@/mixin/ToastService";
+import {ToastService} from "@/mixins/ToastService";
+import DisplayMap from "@/components/display-map";
 
 export default {
   name: "search-location",
-  mixins:[ToastService],
+  mixins: [ToastService],
   props: {},
   data() {
-
     return {
       geocoding: GeocodingService,
-      query:'',
-      lastQuery:'',
-      type:'street',
-      results:undefined,
-      loading:false,
-      defaultPlaceholder:'ex: rue des mirabelle',
+      query: '',
+      lastQuery: '',
+      type: 'street',
+      // states
+      loading: false,
+      // placeholders
+      defaultPlaceholder: 'ex : rue des crocodiles bleu',
+      // results
+      results: undefined,
+      selected: undefined,
+      mode: 'select', // select, validation, visualisation
     }
   },
-  watch: {
-
-  },
+  watch: {},
   computed: {
-
+    mapMode() {
+      switch (this.mode) {
+        case 'validation':
+          return 'area';
+        default:
+          return 'marker';
+      }
+    },
+    coordinates_() {
+      let coord = this?.selected?.geometry?.coordinates;
+      if (coord !== undefined && coord !== null) {
+        return coord;
+      }
+      return null;
+    },
+    selectedTypeCpt() {
+      if (this.selected?.properties?.type !== undefined) {
+        return this.selected?.properties?.type;
+      }
+      return 'street';
+    },
+    zoomCpt() {
+      let add = 0;
+      if (this.mode !== 'select') {
+        add = 5;
+      }
+      switch (this.selectedTypeCpt) {
+        case 'municipality':
+          return 3 + add;
+        case 'locality':
+        case 'housenumber':
+          return 7 + add;
+        default:
+          return 12 + add;
+      }
+    },
   },
   created() {
-
   },
   mounted() {
   },
   methods: {
-    checkQuery(){
-      this.query = this.query.trim();
-      if (this.query.length < 3){
-
-        return false;
-      }
-      if (this.query === this.lastQuery){
-        return false;
-      }
-        return true;
+    selectOption(opt) {
+      this.selected = opt;
     },
-    search(){
-
-      this.results=undefined;
-      if (!this.checkQuery()){
-        this.AppToast.error('impossible d\'executer la recherche');
+    checkQuery() {
+      // query > 3 chars
+      // query !== lastQuery
+      this.query = this.query.trim();
+      if (this.query.length < 3) {
+        return false;
+      }
+      if (this.query === this.lastQuery) {
+        return false;
+      }
+      return true;
+    },
+    search() {
+      if (!this.checkQuery()) {
+        this.AppToast.error('Impossible d\'éxecuter la recherche 🐒');
         return;
       }
-      this.loading=true;
-      this.geocoding.searchLocation(this.query,this.type)
+      this.results = undefined;
+      this.selected = undefined;
+
+      this.loading = true;
+      this.geocoding.searchLocation(this.query, this.type)
           .then(response => {
-                this.results=response?.data?.features;
-            if(this.results !== null && this.results !== undefined && this.results.length > 0){
-              this.lastQuery = this.query;
-              return;
+            console.log('response', response)
+            let data_ = response?.data?.features;
+            if (data_ === undefined || data_ === null || data_.length <= 0) {
+              throw new Error('no results');
             }
-            throw new Error('truc')
+            this.results = data_;
+            this.lastQuery = this.query;
           })
           .catch(err => {
-            console.log('erreure',err);
-            this.AppToast.error('erreur');
+            console.error('error', err);
+            this.AppToast.error('Une erreur est survenue, cheh !');
           })
           .finally(() => {
-        this.loading = false;
-      })
+            this.loading = false;
+          })
       ;
-
-
-
     }
   },
-  components: {},
+  components: {DisplayMap},
   beforeUnmount() {
   }
 }
-
-
 </script>
 
 <style scoped>

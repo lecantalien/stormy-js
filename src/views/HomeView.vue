@@ -11,16 +11,17 @@
 //import HelloWorld from '@/components/HelloWorld.vue'
 
 import SearchLocation from "@/components/search-location";
+
 export default {
   name: 'HomeView',
   components: {
     SearchLocation
-
   },
   data() {
     return {
       message: undefined,
       username: 'Ark',
+      isWarning: false,
     }
   },
   computed: {
@@ -40,7 +41,12 @@ export default {
   mounted() {
     setTimeout(() => {
       this.message = navigator.userAgent;
-    }, 0)
+    }, 1500)
+  },
+  methods: {
+    nomFunction() {
+      // do something
+    }
   }
 }
 </script>

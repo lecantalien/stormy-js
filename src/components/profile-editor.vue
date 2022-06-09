@@ -17,6 +17,9 @@
           <div id="usernameHelp" class="form-text">You can't change the username once you've created the account.</div>
         </div>
       </div>
+      <div class="location-listing-user">
+        <location-listing-user :profile="currentUser"></location-listing-user>
+      </div>
       <div class="w-100 d-flex justify-content-center align-items-center mt-3">
         <button :disabled="loading"
                 class="btn  btn-primary"
@@ -31,6 +34,7 @@
 <script>
 import ImageEdit from "@/components/image-edit";
 import StyleSelector from "@/components/style-selector";
+import LocationListingUser from "@/components/location-listing-user";
 
 export default {
   name: "profile-editor",
@@ -77,7 +81,7 @@ export default {
       this.loading = false;
     }
   },
-  components: {StyleSelector, ImageEdit},
+  components: {LocationListingUser, StyleSelector, ImageEdit},
   beforeUnmount() {
   }
 }

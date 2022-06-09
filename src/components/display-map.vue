@@ -11,8 +11,7 @@
 
       <l-circle v-if="mode === 'area'"
                 :lat-lng="compilatedCoordinates" :radius="areaSize" color="green"/>
-      <l-marker v-if="mode === 'marker'"
-                :draggable="false" :lat-lng="compilatedCoordinates"></l-marker>
+      <l-marker :draggable="false" :lat-lng="compilatedCoordinates"></l-marker>
     </l-map>
   </div>
 </template>

@@ -89,7 +89,7 @@ let sebastien = new User(...formData);
 
 console.log('sebastien: ', sebastien);
 
-florian.setCustomStyle("darcula");
+florian.setCustomStyle("darcula.css");
 
 
 console.log('qui ?', florian, pierrot);

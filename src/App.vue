@@ -3,6 +3,7 @@
   <div class="view-wrapper container-fluid">
     <router-view/>
   </div>
+  <custom-style></custom-style>
 </template>
 
 <style lang="scss">
@@ -29,7 +30,8 @@ nav {
 </style>
 <script>
 import TopMenu from "@/components/top-menu";
+import CustomStyle from "@/components/custom-style";
 export default {
-  components: {TopMenu}
+  components: {CustomStyle, TopMenu}
 }
 </script>

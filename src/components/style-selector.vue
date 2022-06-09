@@ -27,7 +27,7 @@ export default {
           label: "Default"
         },
         {
-          value: "darcula",
+          value: "darcula.css",
           label: "Darcula"
         },
         {
